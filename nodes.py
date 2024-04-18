@@ -11,7 +11,7 @@ class TagFilter:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "string": ("STRING", {"default": ""}),
+                "tags": ("STRING", {"default": ""}),
                 "pose": ("BOOLEAN", {"default": True}),
                 "gesture": ("BOOLEAN", {"default": True}),
                 "action": ("BOOLEAN", {"default": True}),
