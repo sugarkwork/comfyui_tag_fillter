@@ -12,7 +12,7 @@ class TagFilter:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "tags": ("STRING", ),
+                "string": ("STRING", ),
                 "pose": {"BOOLEAN": {"default": True}},
                 "gesture": {"BOOLEAN": {"default": True}},
                 "action": {"BOOLEAN": {"default": True}},
@@ -25,12 +25,9 @@ class TagFilter:
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("result",)
-
+    RETURN_NAMES = ("string",)
     FUNCTION = "tag"
-
     CATEGORY = "text"
-
     OUTPUT_NODE = True
 
     def tag(self, tags, pose=True, gesture=True, action=True, emotion=True, expression=True, color=True, sensitive=True, liquid=True):
@@ -69,5 +66,5 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "TagFilter": "TagFilter Node"
+    "TagFilter": "TagFilter"
 }
