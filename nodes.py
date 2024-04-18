@@ -1,7 +1,8 @@
+import os
 import json
 
 
-tag_category = json.load(open("tag_category.json"))
+tag_category = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"tag_category.json")))
 
 
 class TagFilter:
