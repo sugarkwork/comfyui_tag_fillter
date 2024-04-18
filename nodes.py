@@ -35,8 +35,7 @@ class TagFilter:
     OUTPUT_NODE = True
 
     def tag(self, tags, pose=True, gesture=True, action=True, emotion=True, expression=True, color=True, sensitive=True, liquid=True, include_categories="", exclude_categories=""):
-        tags = [tag.strip() for tag in tags.split(",")]
-        tags2 = [tag.replace("_", " ").lower() for tag in tags]
+
         targets = []
         if pose:
             targets.append("pose")
@@ -58,10 +57,16 @@ class TagFilter:
             targets += [category.strip() for category in include_categories.replace("\n",",").split(",")]
         if exclude_categories:
             targets = [target for target in targets if target not in [category.strip() for category in exclude_categories.replace("\n",",").split(",")]]
+        
+        print("targets", targets)
+
+        tags = [tag.strip() for tag in tags.split(",")]
+        tags2 = [tag.replace(" ", "_").lower() for tag in tags]
+
         result = []
         for i, tag2 in enumerate(tags2):
             if tag2 in tag_category:
-                category_list = tag_category[tag2]
+                category_list = tag_category.get(tag2, [])
                 for target in targets:
                     if target in category_list and tags[i] not in result:
                         result.append(tags[i])
