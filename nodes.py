@@ -17,7 +17,8 @@ class TagFilter:
                 "action": ("BOOLEAN", {"default": True}),
                 "emotion": ("BOOLEAN", {"default": True}),
                 "expression": ("BOOLEAN", {"default": True}),
-                "color": ("BOOLEAN", {"default": True}),
+                "camera": ("BOOLEAN", {"default": True}),
+                "angle": ("BOOLEAN", {"default": True}),
                 "sensitive": ("BOOLEAN", {"default": True}),
                 "liquid": ("BOOLEAN", {"default": True}),
                 "include_categories": ("STRING", {"default": ""}),
@@ -34,7 +35,7 @@ class TagFilter:
 
     OUTPUT_NODE = True
 
-    def tag(self, tags, pose=True, gesture=True, action=True, emotion=True, expression=True, color=True, sensitive=True, liquid=True, include_categories="", exclude_categories=""):
+    def tag(self, tags, pose=True, gesture=True, action=True, emotion=True, expression=True, camera=True, angle=True, sensitive=True, liquid=True, include_categories="", exclude_categories=""):
 
         targets = []
         if pose:
@@ -47,8 +48,10 @@ class TagFilter:
             targets.append("emotion")
         if expression:
             targets.append("expression")
-        if color:
-            targets.append("color")
+        if camera:
+            targets.append("camera")
+        if angle:
+            targets.append("angle")
         if sensitive:
             targets.append("sensitive")
         if liquid:
