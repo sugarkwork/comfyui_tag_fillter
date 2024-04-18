@@ -38,6 +38,7 @@ class TagFilter:
     def tag(self, tags, pose=True, gesture=True, action=True, emotion=True, expression=True, camera=True, angle=True, sensitive=True, liquid=True, include_categories="", exclude_categories=""):
 
         targets = []
+        exclude_targets = []
         if pose:
             targets.append("pose")
         if gesture:
@@ -59,7 +60,8 @@ class TagFilter:
         if include_categories:
             targets += [category.strip() for category in include_categories.replace("\n",",").split(",")]
         if exclude_categories:
-            targets = [target for target in targets if target not in [category.strip() for category in exclude_categories.replace("\n",",").split(",")]]
+            exclude_targets = [category.strip() for category in exclude_categories.replace("\n",",").split(",")]
+            targets = [target for target in targets if target not in exclude_targets]
         
         print("targets", targets)
 
@@ -70,9 +72,16 @@ class TagFilter:
         for i, tag2 in enumerate(tags2):
             if tag2 in tag_category:
                 category_list = tag_category.get(tag2, [])
-                for target in targets:
-                    if target in category_list and tags[i] not in result:
-                        result.append(tags[i])
+
+                for category in category_list:
+                    if category in exclude_targets:
+                        break
+                else:
+                    for category in category_list:
+                        if category in targets and tags[i] not in result:
+                            result.append(tags[i])
+                            break
+
         return (", ".join(result),)
 
 NODE_CLASS_MAPPINGS = {
