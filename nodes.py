@@ -26,7 +26,7 @@ class TagFilter:
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("string",)
+    RETURN_NAMES = ("result",)
 
     FUNCTION = "tag"
 
