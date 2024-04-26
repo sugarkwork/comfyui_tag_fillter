@@ -1,7 +1,46 @@
 import os
 import json
 
+
 tag_category = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"tag_category.json")))
+
+
+class TagRemover:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "tags": ("STRING", {"default": ""}),
+                "exclude_tags": ("STRING", {"default": ""}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("result",)
+
+    FUNCTION = "tag"
+
+    CATEGORY = "text"
+
+    OUTPUT_NODE = True
+
+    def tag(self, tags:str, exclude_tags:str=""):
+        tags = [tag.strip() for tag in tags.replace("\n",",").split(",")]
+        tags2 = [tag.replace(" ", "_").lower().strip() for tag in tags]
+
+        exclude_tags = [tag.strip() for tag in exclude_tags.replace("\n",",").split(",")]
+        exclude_tags2 = [tag.replace(" ", "_").lower().strip() for tag in exclude_tags]
+
+        result = []
+        for i, tag2 in enumerate(tags2):
+            if tag2 not in exclude_tags2:
+                result.append(tags[i])
+        
+        return (", ".join(result),)
+
 
 class TagFilter:
     def __init__(self):
@@ -85,9 +124,11 @@ class TagFilter:
         return (", ".join(result),)
 
 NODE_CLASS_MAPPINGS = {
-    "TagFilter": TagFilter
+    "TagFilter": TagFilter,
+    "TagRemover": TagRemover,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "TagFilter": "TagFilter"
+    "TagFilter": "TagFilter",
+    "TagRemover": "TagRemover"
 }
