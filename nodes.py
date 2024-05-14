@@ -42,6 +42,83 @@ class TagRemover:
         return (", ".join(result),)
 
 
+class TagReplace:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "tags": ("STRING", {"default": ""}),
+                "replace_tags": ("STRING", {"default": ""}),
+                "match": ("FLOAT", {"default": 0.3}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("result",)
+
+    FUNCTION = "tag"
+
+    CATEGORY = "text"
+
+    OUTPUT_NODE = True
+
+    def _get_categories(self, tag: str) -> set:
+        """タグのカテゴリーを取得する"""
+        return set(tag_category.get(tag, []))
+
+    def _category_match_percentage(self, categories1: set, categories2: set) -> float:
+        """2つのカテゴリセット間の一致度(%)を計算する"""
+        if not categories1 or not categories2:
+            return 0
+        intersection = categories1.intersection(categories2)
+        union = categories1.union(categories2)
+        return len(intersection) / len(union)
+
+    def tag(self, tags:str, replace_tags:str="", match:float=0.3):
+        tags = [tag.strip() for tag in tags.replace("\n",",").split(",")]
+        tags_normalized = [tag.replace(" ", "_").lower().strip() for tag in tags]
+
+        replace_tags = [tag.strip() for tag in replace_tags.replace("\n",",").split(",")]
+        replace_tags_normalized = [tag.replace(" ", "_").lower().strip() for tag in replace_tags]
+        replace_tags_used = {tag:False for tag in replace_tags_normalized}
+
+        result = []
+        for i, tag in enumerate(tags_normalized):
+            tag_categories = self._get_categories(tag)
+            print(tag, tag_categories)
+            best_match_tag = None
+            best_match_tag_id = None
+            best_match_percentage = 0
+
+            for k, replace_tag in enumerate(replace_tags_normalized):
+                replace_categories = self._get_categories(replace_tag)
+                match_percentage = self._category_match_percentage(tag_categories, replace_categories)
+                print(replace_tag, replace_categories, match_percentage)
+
+                if match_percentage and match_percentage > best_match_percentage:
+                    best_match_percentage = match_percentage
+                    best_match_tag = replace_tag
+                    replace_tags_used[replace_tag] = True
+                    best_match_tag_id = k
+
+            
+            if best_match_tag and best_match_percentage >= match:
+                print("@@@ best_match_tag", best_match_tag, best_match_percentage)
+                result.append(replace_tags[best_match_tag_id])
+            else:
+                print("### not best_match_tag", tags[i])
+                result.append(tags[i])
+
+        # replace_tags の中から、tags に存在しないタグを追加
+        extra_tags = [replace_tag for replace_tag, used in replace_tags_used.items() if not used]
+        result.extend(extra_tags)
+        
+        return (", ".join(result),)
+    
+
 class TagFilter:
     def __init__(self):
         pass
@@ -96,15 +173,18 @@ class TagFilter:
             targets.append("sensitive")
         if liquid:
             targets.append("liquid")
+        
+        include_categories = include_categories.strip()
         if include_categories:
             targets += [category.strip() for category in include_categories.replace("\n",",").split(",")]
+
         if exclude_categories:
             exclude_targets = [category.strip() for category in exclude_categories.replace("\n",",").split(",")]
             targets = [target for target in targets if target not in exclude_targets]
         
         print("targets", targets)
 
-        tags = [tag.strip() for tag in tags.split(",")]
+        tags = [tag.strip() for tag in tags.replace(".", ",").replace("\n", ",").split(",")]
         tags2 = [tag.replace(" ", "_").lower() for tag in tags]
 
         result = []
@@ -117,7 +197,7 @@ class TagFilter:
                         break
                 else:
                     for category in category_list:
-                        if category in targets and tags[i] not in result:
+                        if '*' in include_categories or ( category in targets and tags[i] not in result ):
                             result.append(tags[i])
                             break
 
@@ -125,10 +205,12 @@ class TagFilter:
 
 NODE_CLASS_MAPPINGS = {
     "TagFilter": TagFilter,
+    "TagReplace": TagReplace,
     "TagRemover": TagRemover,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "TagFilter": "TagFilter",
+    "TagReplace": "TagReplace",
     "TagRemover": "TagRemover"
 }
