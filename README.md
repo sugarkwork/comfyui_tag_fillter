@@ -23,3 +23,13 @@ TagFilter と合わせて使うと、表情のタグだけ消す、色（color�
 
 ![image](https://github.com/sugarkwork/comfyui_tag_fillter/assets/98699377/694aadc3-8968-4153-bd52-8809aec47df6)
 
+# TagReplace
+
+同じカテゴリのタグを置き換えます。
+
+例えば long hair というタグが含まれるプロンプトを入力し、置き換えるタグに twintails を指定すると、long hair を twintails に置き換える事が出来ます。
+
+どれぐらい近いタグを置き換えるかを、0.0 ～ 1.0 で指定します。1.0 を指定するとカテゴリとして完全一致した場合にのみタグが置換されます。0.3 ぐらいがちょうどいいです。うまく置換されない場合は値を下げてください。
+
+![image](https://github.com/sugarkwork/comfyui_tag_fillter/assets/98699377/c492c518-0531-4735-8a73-3a29ae0b9a1b)
+
