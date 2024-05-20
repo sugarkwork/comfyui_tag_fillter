@@ -126,7 +126,6 @@ class TagReplace:
         result = []
         for i, tag in enumerate(tags_normalized):
             tag_categories = self._get_categories(tag)
-            print(tag, tag_categories)
             best_match_tag = None
             best_match_tag_id = None
             best_match_percentage = 0
@@ -134,7 +133,6 @@ class TagReplace:
             for k, replace_tag in enumerate(replace_tags_normalized):
                 replace_categories = self._get_categories(replace_tag)
                 match_percentage = self._category_match_percentage(tag_categories, replace_categories)
-                print(replace_tag, replace_categories, match_percentage)
 
                 if match_percentage and match_percentage > best_match_percentage:
                     best_match_percentage = match_percentage
@@ -144,10 +142,8 @@ class TagReplace:
 
             
             if best_match_tag and best_match_percentage >= match:
-                print("@@@ best_match_tag", best_match_tag, best_match_percentage)
                 result.append(replace_tags[best_match_tag_id])
             else:
-                print("### not best_match_tag", tags[i])
                 result.append(tags[i])
 
         # replace_tags の中から、tags に存在しないタグを追加
