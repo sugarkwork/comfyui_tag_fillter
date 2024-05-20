@@ -5,6 +5,44 @@ import json
 tag_category = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"tag_category.json")))
 
 
+class TagMerger:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "tags1": ("STRING", {"default": ""}),
+                "tags2": ("STRING", {"default": ""}),
+                "under_score": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("result",)
+
+    FUNCTION = "tag"
+
+    CATEGORY = "text"
+
+    OUTPUT_NODE = True
+
+    def tag(self, tags1:str, tags2:str, under_score=True):
+        tags1 = [tag.strip().replace(" ", "_").lower() for tag in tags1.replace(".",",").replace("\n",",").split(",")]
+        tags2 = [tag.strip().replace(" ", "_").lower() for tag in tags2.replace(".",",").replace("\n",",").split(",")]
+
+        tags = tags1 + list(set(tags2) - set(tags1))
+
+        # exclude none daata
+        tags = [tag for tag in tags if tag]
+
+        if not under_score:
+            tags = [tag.replace("_", " ") for tag in tags]
+
+        return (", ".join(tags),)
+
+
 class TagRemover:
     def __init__(self):
         pass
@@ -204,12 +242,14 @@ class TagFilter:
         return (", ".join(result),)
 
 NODE_CLASS_MAPPINGS = {
+    "TagMerger": TagMerger,
     "TagFilter": TagFilter,
     "TagReplace": TagReplace,
     "TagRemover": TagRemover,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "TagMerger": "TagMerger",
     "TagFilter": "TagFilter",
     "TagReplace": "TagReplace",
     "TagRemover": "TagRemover"
