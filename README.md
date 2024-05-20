@@ -23,7 +23,7 @@ TagFilter と合わせて使うと、表情のタグだけ消す、色（color�
 
 ![image](https://github.com/sugarkwork/comfyui_tag_fillter/assets/98699377/694aadc3-8968-4153-bd52-8809aec47df6)
 
-# TagReplace
+# TagReplace (動作検証中、うまく動かないかも)
 
 同じカテゴリのタグを置き換えます。
 
