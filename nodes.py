@@ -304,6 +304,7 @@ class TagFilter:
         return (", ".join(result),)
 
 NODE_CLASS_MAPPINGS = {
+    "TagSwitcher": TagSwitcher,
     "TagMerger": TagMerger,
     "TagFilter": TagFilter,
     "TagReplace": TagReplace,
@@ -311,6 +312,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "TagSwitcher": "TagSwitcher",
     "TagMerger": "TagMerger",
     "TagFilter": "TagFilter",
     "TagReplace": "TagReplace",
