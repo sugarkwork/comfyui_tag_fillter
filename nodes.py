@@ -5,6 +5,72 @@ import json
 tag_category = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"tag_category.json")))
 
 
+class TagSwitcher:
+    def __init__(self):
+        pass
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "input_tags": ("STRING", {"default": ""}),
+                "default_image": ("IMAGE", {"default": ""}),
+                "tags1": ("STRING", {"default": ""}),
+                "image1": ("IMAGE", {"default": ""}),
+                "any1": ("BOOLEAN", {"default": True}),
+            },
+            "optional": {   
+                "tags2": ("STRING", {"default": ""}),
+                "image2": ("IMAGE", {"default": ""}),
+                "any2": ("BOOLEAN", {"default": True}),
+                "tags3": ("STRING", {"default": ""}),
+                "image3": ("IMAGE", {"default": ""}),
+                "any3": ("BOOLEAN", {"default": True}),
+                "tags4": ("STRING", {"default": ""}),
+                "image4": ("IMAGE", {"default": ""}),
+                "any4": ("BOOLEAN", {"default": True}),
+            }
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+
+    FUNCTION = "tag"
+
+    CATEGORY = "image"
+
+    OUTPUT_NODE = True
+
+    def _tag_split(self, tags: str) -> list:
+        return [tag.strip().replace("_", " ").lower().strip() for tag in tags.replace(".",",").replace("\n",",").split(",")]
+
+    def tag(self, input_tags="", default_image=None, tags1="", image1=None, any1=True, tags2="", image2=None, any2=True, tags3="", image3=None, any3=True, tags4="", image4=None, any4=True):
+        input_tags = self._tag_split(input_tags)
+
+        target_tags = []
+        tags1 = set(self._tag_split(tags1))
+        target_tags.append((tags1, image1, any1))
+
+        tags2 = set(self._tag_split(tags2))
+        target_tags.append((tags2, image2, any2))
+
+        tags3 = set(self._tag_split(tags3))
+        target_tags.append((tags3, image3, any3))
+
+        tags4 = set(self._tag_split(tags4))
+        target_tags.append((tags4, image4, any4))
+
+        for tags, image, any_flag in target_tags:
+            if any_flag:
+                if any(tag in tags for tag in input_tags):
+                    return image
+            else:
+                if all(tag in input_tags for tag in tags):
+                    return image
+
+        return default_image
+
+
 class TagMerger:
     def __init__(self):
         pass
