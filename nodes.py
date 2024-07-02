@@ -63,12 +63,12 @@ class TagSwitcher:
         for tags, image, any_flag in target_tags:
             if any_flag:
                 if any(tag in tags for tag in input_tags):
-                    return image
+                    return (image,)
             else:
                 if all(tag in input_tags for tag in tags):
-                    return image
+                    return (image,)
 
-        return default_image
+        return (default_image,)
 
 
 class TagMerger:
