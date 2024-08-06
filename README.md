@@ -37,3 +37,26 @@ TagFilter と合わせて使うと、表情のタグだけ消す、色（color�
 
 ![image](https://github.com/sugarkwork/comfyui_tag_fillter/assets/98699377/c492c518-0531-4735-8a73-3a29ae0b9a1b)
 
+# TagSwitcher
+
+default_image と image1 という画像をセットする必要があります。
+input_tags に WD14 Tagger などのから出力されたタグを渡して、tag1 にフィルタリングするタグをセットします。
+こうすると、input_tags の中に tag1 のタグが含まれる場合（どれか1つでも含まれる条件なら any1 を True）に、image1 の画像を出力します。
+同様に tag2 のタグが含まれる場合は image2 を出力します。
+
+使用用途としては、例えば入力画像にもし猫耳が含まれる場合には絶対消すという処理を行いたい場合。
+CLIPSeg Masking などのノードで動物の耳を検出しそれを Big lama Remover で消去した画像を作ります。
+もし画像のタグに animal_ears, cat_ears が含まれる場合、Big lama で消去した画像を出力し、それらの動物耳のタグが含まれない場合は元の画像を出力します。
+
+何が嬉しいかというと、CLIPSeg は、探したい対象物が画面内に見つけられない場合、適当な部分をマスクしてしまい、無関係なものを消してしまう事があります。
+
+TagSwitcher では入力タグに基づいて、その物が画像内に含まれる場合のみに動作し、対象物を消去した画像を提供出来ます。
+
+![image](https://github.com/user-attachments/assets/f875272b-5512-4907-8d80-42e89b38e776)
+
+# TagMerger
+
+ただタグをマージするだけです。既に存在するタグを無視されます。
+
+![image](https://github.com/user-attachments/assets/fb3d5fc7-b6fb-4e2a-9b5d-4d210935ab56)
+
