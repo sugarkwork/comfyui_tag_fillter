@@ -5,6 +5,44 @@ import json
 tag_category = json.load(open(os.path.join(os.path.dirname(os.path.realpath(__file__)),"tag_category.json")))
 
 
+class TagIf:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "tags": ("STRING", {"default": ""}),
+                "find": ("STRING", {"default": ""}),
+                "output1": ("STRING", {"default": ""}),
+            },
+            "optional": {
+                "output2": ("STRING", {"default": ""}),
+                "output3": ("STRING", {"default": ""}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING","STRING","STRING",)
+    RETURN_NAMES = ("output1","output2","output3",)
+
+    FUNCTION = "tag"
+
+    CATEGORY = "string"
+
+    OUTPUT_NODE = True
+
+    def _tag_split(self, tags: str) -> list:
+        return [tag.strip().replace("_", " ").lower().strip() for tag in tags.replace(".",",").replace("\n",",").split(",")]
+
+    def tag(self, tags:str, find:str, tag1:str, tag2:str=None, tag3:str=None):
+        tags = self._tag_split(tags)
+        find = self._tag_split(find)
+        if all(tag in tags for tag in find):
+            return (tag1, tag2, tag3)
+
+
+
 class TagSwitcher:
     def __init__(self):
         pass
@@ -309,6 +347,7 @@ NODE_CLASS_MAPPINGS = {
     "TagFilter": TagFilter,
     "TagReplace": TagReplace,
     "TagRemover": TagRemover,
+    "TagIf": TagIf
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -316,5 +355,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "TagMerger": "TagMerger",
     "TagFilter": "TagFilter",
     "TagReplace": "TagReplace",
-    "TagRemover": "TagRemover"
+    "TagRemover": "TagRemover",
+    "TagIf": "TagIf"
 }
