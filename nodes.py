@@ -35,11 +35,13 @@ class TagIf:
     def _tag_split(self, tags: str) -> list:
         return [tag.strip().replace("_", " ").lower().strip() for tag in tags.replace(".",",").replace("\n",",").split(",")]
 
-    def tag(self, tags:str, find:str, tag1:str, tag2:str=None, tag3:str=None):
+    def tag(self, tags:str, find:str, output1:str, output2:str=None, output3:str=None):
         tags = self._tag_split(tags)
         find = self._tag_split(find)
         if all(tag in tags for tag in find):
-            return (tag1, tag2, tag3)
+            return (output1, output2, output3)
+        else:
+            return ("", "", "")
 
 
 
